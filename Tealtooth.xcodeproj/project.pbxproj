@@ -11,6 +11,7 @@
 		48C63EF229D95E08001C666F /* TealtoothTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C63EF129D95E08001C666F /* TealtoothTests.swift */; };
 		48C63EF329D95E08001C666F /* Tealtooth.h in Headers */ = {isa = PBXBuildFile; fileRef = 48C63EE729D95E08001C666F /* Tealtooth.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		48C63F0029D96450001C666F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C63EFF29D96450001C666F /* Logger.swift */; };
+		48C63F0229D96616001C666F /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C63F0129D96616001C666F /* Service.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,7 @@
 		48C63EEC29D95E08001C666F /* TealtoothTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TealtoothTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		48C63EF129D95E08001C666F /* TealtoothTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TealtoothTests.swift; sourceTree = "<group>"; };
 		48C63EFF29D96450001C666F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		48C63F0129D96616001C666F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 		48C63EFE29D96443001C666F /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				48C63F0129D96616001C666F /* Service.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				48C63F0029D96450001C666F /* Logger.swift in Sources */,
+				48C63F0229D96616001C666F /* Service.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
