@@ -16,6 +16,7 @@
 		48C63F0629D967F9001C666F /* BluetoothAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C63F0529D967F9001C666F /* BluetoothAssistant.swift */; };
 		48C63F0829D96A5D001C666F /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C63F0729D96A5D001C666F /* Notification.swift */; };
 		48C63F0A29D96A93001C666F /* CentralManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C63F0929D96A93001C666F /* CentralManagerDelegate.swift */; };
+		48C63F0C29D96C23001C666F /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C63F0B29D96C23001C666F /* Peripheral.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +40,7 @@
 		48C63F0529D967F9001C666F /* BluetoothAssistant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothAssistant.swift; sourceTree = "<group>"; };
 		48C63F0729D96A5D001C666F /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		48C63F0929D96A93001C666F /* CentralManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerDelegate.swift; sourceTree = "<group>"; };
+		48C63F0B29D96C23001C666F /* Peripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Peripheral.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,7 @@
 				48C63F0929D96A93001C666F /* CentralManagerDelegate.swift */,
 				48C63F0329D966D4001C666F /* Characteristic.swift */,
 				48C63F0129D96616001C666F /* Service.swift */,
+				48C63F0B29D96C23001C666F /* Peripheral.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				48C63F0A29D96A93001C666F /* CentralManagerDelegate.swift in Sources */,
+				48C63F0C29D96C23001C666F /* Peripheral.swift in Sources */,
 				48C63F0429D966D4001C666F /* Characteristic.swift in Sources */,
 				48C63F0829D96A5D001C666F /* Notification.swift in Sources */,
 				48C63F0029D96450001C666F /* Logger.swift in Sources */,
