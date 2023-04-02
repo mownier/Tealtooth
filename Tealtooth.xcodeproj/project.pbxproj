@@ -10,6 +10,7 @@
 		48C63EED29D95E08001C666F /* Tealtooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C63EE429D95E08001C666F /* Tealtooth.framework */; };
 		48C63EF229D95E08001C666F /* TealtoothTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C63EF129D95E08001C666F /* TealtoothTests.swift */; };
 		48C63EF329D95E08001C666F /* Tealtooth.h in Headers */ = {isa = PBXBuildFile; fileRef = 48C63EE729D95E08001C666F /* Tealtooth.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		48C63F0029D96450001C666F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C63EFF29D96450001C666F /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +28,7 @@
 		48C63EE729D95E08001C666F /* Tealtooth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tealtooth.h; sourceTree = "<group>"; };
 		48C63EEC29D95E08001C666F /* TealtoothTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TealtoothTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		48C63EF129D95E08001C666F /* TealtoothTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TealtoothTests.swift; sourceTree = "<group>"; };
+		48C63EFF29D96450001C666F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 		48C63EE629D95E08001C666F /* Tealtooth */ = {
 			isa = PBXGroup;
 			children = (
+				48C63EFC29D96437001C666F /* Source */,
 				48C63EE729D95E08001C666F /* Tealtooth.h */,
 			);
 			path = Tealtooth;
@@ -80,6 +83,30 @@
 				48C63EF129D95E08001C666F /* TealtoothTests.swift */,
 			);
 			path = TealtoothTests;
+			sourceTree = "<group>";
+		};
+		48C63EFC29D96437001C666F /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				48C63EFE29D96443001C666F /* Models */,
+				48C63EFD29D9643E001C666F /* Common */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		48C63EFD29D9643E001C666F /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				48C63EFF29D96450001C666F /* Logger.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		48C63EFE29D96443001C666F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,6 +171,7 @@
 				TargetAttributes = {
 					48C63EE329D95E07001C666F = {
 						CreatedOnToolsVersion = 14.2;
+						LastSwiftMigration = 1420;
 					};
 					48C63EEB29D95E08001C666F = {
 						CreatedOnToolsVersion = 14.2;
@@ -191,6 +219,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48C63F0029D96450001C666F /* Logger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,6 +360,7 @@
 		48C63EF729D95E08001C666F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -357,6 +387,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -365,6 +396,7 @@
 		48C63EF829D95E08001C666F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -399,6 +431,7 @@
 		48C63EFA29D95E08001C666F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -418,6 +451,7 @@
 		48C63EFB29D95E08001C666F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
