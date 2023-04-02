@@ -15,4 +15,24 @@ public class BluetoothAssistant {
         )
         self.centralManagerDelegate = centralManagerDelegate
     }
+    @discardableResult
+    public func scan() -> Swift.Error? {
+        return nil
+    }
+    @discardableResult
+    public func stopScan() -> Swift.Error? {
+        return nil
+    }
+    @discardableResult
+    public func connect(
+        _ peripheral: Peripheral
+    ) -> Result<Peripheral, Swift.Error> {
+        return .failure(TealtoothError.unimplemented)
+    }
+    @discardableResult
+    public func disconnect(
+        _ peripheral: Peripheral
+    ) -> Result<Peripheral, Swift.Error> {
+        return .failure(TealtoothError.unimplemented)
+    }
 }
