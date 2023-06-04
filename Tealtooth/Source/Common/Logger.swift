@@ -22,6 +22,11 @@ public class DefaultLogger: Logger {
     }
 }
 
+enum LogLevel: String {
+    case info
+    case error
+}
+
 public func updateLogger(_ value: Logger?) {
     logger = value
 }
