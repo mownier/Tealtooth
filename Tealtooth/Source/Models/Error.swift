@@ -2,6 +2,8 @@ import Foundation
 
 public enum TealtoothError: Swift.Error {
     case unimplemented
+    case bluetoothNotPoweredOn
+    case alreadyScanning
 }
 
 public struct TealtoothErrors: Swift.Error {
