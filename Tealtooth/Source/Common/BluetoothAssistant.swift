@@ -3,6 +3,7 @@ import CoreBluetooth
 public class BluetoothAssistant {
     private var centralManager: CBCentralManager
     private var centralManagerDelegate: CentralManagerDelegate
+    private(set) var semaphore: DispatchSemaphore
     public init(
         queue: DispatchQueue? = nil,
         options: [String: Any]? = nil
@@ -14,6 +15,8 @@ public class BluetoothAssistant {
             options: options
         )
         self.centralManagerDelegate = centralManagerDelegate
+        self.semaphore = DispatchSemaphore(value: 1)
+        self.centralManagerDelegate.bluetoothAssistant = self
     }
     @discardableResult
     public func scan(services: [CBUUID]? = nil) -> Swift.Error? {
