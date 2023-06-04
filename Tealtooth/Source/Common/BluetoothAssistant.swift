@@ -69,6 +69,7 @@ public class BluetoothAssistant {
             logger?.writeConsole(LogLevel.error, "on connect, an error occurred \(error)")
             return .failure(error)
         }
+        logger?.writeConsole(LogLevel.info, "on connect, timeout = \(timeout), options = \(options.debugString)")
         centralManager.connect(peripheral.proxy, options: options)
         let semaphoreResult = semaphore.wait(timeout: .now() + timeout)
         if semaphoreResult == .timedOut {
