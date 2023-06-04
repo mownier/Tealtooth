@@ -16,7 +16,14 @@ public class BluetoothAssistant {
         self.centralManagerDelegate = centralManagerDelegate
     }
     @discardableResult
-    public func scan() -> Swift.Error? {
+    public func scan(services: [CBUUID]? = nil) -> Swift.Error? {
+        if centralManager.state != .poweredOn {
+            return TealtoothError.bluetoothNotPoweredOn
+        }
+        if centralManager.isScanning {
+            return TealtoothError.alreadyScanning
+        }
+        centralManager.scanForPeripherals(withServices: services)
         return nil
     }
     @discardableResult
