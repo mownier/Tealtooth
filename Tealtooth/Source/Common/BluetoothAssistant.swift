@@ -28,6 +28,13 @@ public class BluetoothAssistant {
     }
     @discardableResult
     public func stopScan() -> Swift.Error? {
+        if centralManager.state != .poweredOn {
+            return TealtoothError.bluetoothNotPoweredOn
+        }
+        if !centralManager.isScanning {
+            return TealtoothError.scanningNotActive
+        }
+        centralManager.stopScan()
         return nil
     }
     @discardableResult
