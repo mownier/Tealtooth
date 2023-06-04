@@ -9,6 +9,9 @@ public enum TealtoothError: Swift.Error {
     case errorNotDetermined
     case connectResultIsNil
     case stillConnecting
+    case stillDisconnecting
+    case timedOutWhileTryingToDisconnect
+    case disconnectResultIsNil
 }
 
 public struct TealtoothErrors: Swift.Error {
