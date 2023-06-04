@@ -1,6 +1,7 @@
 import CoreBluetooth
 
 public class BluetoothAssistant {
+    public private(set) var name: String
     private var centralManager: CBCentralManager
     private var centralManagerDelegate: CentralManagerDelegate
     private var scanTimer: Timer?
@@ -11,9 +12,11 @@ public class BluetoothAssistant {
     var connectResult: Result<Peripheral, Swift.Error>?
     var disconnectResult: Result<Peripheral, Swift.Error>?
     public init(
+        name: String,
         queue: DispatchQueue? = nil,
         options: [String: Any]? = nil
     ) {
+        self.name = name
         let centralManagerDelegate = CentralManagerDelegate()
         self.centralManager = CBCentralManager(
             delegate: centralManagerDelegate,
