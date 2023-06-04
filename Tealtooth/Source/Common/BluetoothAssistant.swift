@@ -78,6 +78,7 @@ public class BluetoothAssistant {
         }
         let result = connectResult ?? .failure(TealtoothError.connectResultIsNil)
         connectResult = nil
+        logger?.writeConsole(LogLevel.error, "on connect, result = \(result)")
         return result
     }
     @discardableResult
