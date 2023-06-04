@@ -2,8 +2,8 @@ import Foundation
 
 open class WatchDogAssistant {
     public private(set) var isValid: Bool
+    public private(set) var interval: TimeInterval
     public private(set) weak var bluetoothAssistant: BluetoothAssistant?
-    private var interval: TimeInterval
     private var timer: Timer?
     private var isStarted: Bool
     private var isStarting: Bool
@@ -13,7 +13,9 @@ open class WatchDogAssistant {
         self.isStarted = false
         self.isStarting = false
     }
-    open func doAction() {
+    open func onTick() {
+    }
+    open func onInvalidate() {
     }
     @discardableResult
     fileprivate func start(_ assistant: BluetoothAssistant) -> Bool {
@@ -36,11 +38,12 @@ open class WatchDogAssistant {
                 repeats: true
             ) { [weak self] _ in
                 if self?.isValid == true {
-                    self?.doAction()
+                    self?.onTick()
                 }
             }
             this.timer = timer
             RunLoop.main.add(timer, forMode: .default)
+            timer.fire()
             this.isStarted = true
             this.isStarting = false
         }
@@ -53,6 +56,7 @@ open class WatchDogAssistant {
         }
         isValid = false
         bluetoothAssistant = nil
+        onInvalidate()
         DispatchQueue.main.async { [weak self] in
             guard let this = self else {
                 return
@@ -66,26 +70,53 @@ open class WatchDogAssistant {
     }
 }
 
-public class WatchDogAssistantManager {
-    private static var currentWatchDog: WatchDogAssistant?
-    @discardableResult
-    public static func start(watchdog: WatchDogAssistant, bluetooth: BluetoothAssistant) -> Bool {
-        if let current = currentWatchDog {
-            current.invalidate()
+open class DefaultWatchDogAssistant : WatchDogAssistant {
+    private var queue: OperationQueue?
+    private var shouldAddOperation: Bool = true
+    open override func onTick() {
+        if queue == nil {
+            queue = OperationQueue()
+            queue?.maxConcurrentOperationCount = 1
         }
-        WatchDogAssistantManager.currentWatchDog = watchdog
-        return watchdog.start(bluetooth)
+        if !shouldAddOperation {
+            return
+        }
+        shouldAddOperation = false
+        queue?.addOperation { [weak self] in
+            self?.performOperation()
+            self?.shouldAddOperation = true
+        }
+    }
+    open override func onInvalidate() {
+        queue?.cancelAllOperations()
+        queue = nil
+    }
+    open func performOperation() {
     }
 }
 
-public class DefaultWatchDogAssistant : WatchDogAssistant {
-    public override func doAction() {
-        print("Hi, will do action")
+public class WatchDogAssistantManager {
+    private static var watchDogAssistants: [String : WatchDogAssistant] = [:]
+    @discardableResult
+    public static func start(
+        key: String,
+        watchDog: WatchDogAssistant,
+        bluetooth: BluetoothAssistant
+    ) -> Bool {
+        if let current = watchDogAssistants[key] {
+            current.invalidate()
+            watchDogAssistants.removeValue(forKey: key)
+        }
+        watchDogAssistants[key] = watchDog
+        return watchDog.start(bluetooth)
     }
-}
-
-func foo() {
-    let watchdog = WatchDogAssistant(interval: 1.5)
-    let bluetooth = BluetoothAssistant(queue: DispatchQueue(label: "sample.ble.assistant.dq"))
-    WatchDogAssistantManager.start(watchdog: watchdog, bluetooth: bluetooth)
+    @discardableResult
+    public static func invalidate(key: String) -> Bool {
+        if let current = watchDogAssistants[key] {
+            let result = current.invalidate()
+            watchDogAssistants.removeValue(forKey: key)
+            return result
+        }
+        return false
+    }
 }
