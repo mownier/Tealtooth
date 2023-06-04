@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		488DD1E72A2C3FE10057C645 /* Advertiser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 488DD1E62A2C3FE10057C645 /* Advertiser.swift */; };
+		488DD1EA2A2C55630057C645 /* OptionalExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 488DD1E92A2C55630057C645 /* OptionalExt.swift */; };
 		48C63EED29D95E08001C666F /* Tealtooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C63EE429D95E08001C666F /* Tealtooth.framework */; };
 		48C63EF229D95E08001C666F /* TealtoothTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C63EF129D95E08001C666F /* TealtoothTests.swift */; };
 		48C63EF329D95E08001C666F /* Tealtooth.h in Headers */ = {isa = PBXBuildFile; fileRef = 48C63EE729D95E08001C666F /* Tealtooth.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -33,6 +34,7 @@
 
 /* Begin PBXFileReference section */
 		488DD1E62A2C3FE10057C645 /* Advertiser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Advertiser.swift; sourceTree = "<group>"; };
+		488DD1E92A2C55630057C645 /* OptionalExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalExt.swift; sourceTree = "<group>"; };
 		48C63EE429D95E08001C666F /* Tealtooth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Tealtooth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		48C63EE729D95E08001C666F /* Tealtooth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tealtooth.h; sourceTree = "<group>"; };
 		48C63EEC29D95E08001C666F /* TealtoothTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TealtoothTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -66,6 +68,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		488DD1E82A2C554B0057C645 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				488DD1E92A2C55630057C645 /* OptionalExt.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		48C63EDA29D95E07001C666F = {
 			isa = PBXGroup;
 			children = (
@@ -104,6 +114,7 @@
 		48C63EFC29D96437001C666F /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				488DD1E82A2C554B0057C645 /* Extensions */,
 				48C63EFE29D96443001C666F /* Models */,
 				48C63EFD29D9643E001C666F /* Common */,
 			);
@@ -246,6 +257,7 @@
 				48C63F0E29D96CA2001C666F /* Error.swift in Sources */,
 				48C63F0A29D96A93001C666F /* CentralManagerDelegate.swift in Sources */,
 				488DD1E72A2C3FE10057C645 /* Advertiser.swift in Sources */,
+				488DD1EA2A2C55630057C645 /* OptionalExt.swift in Sources */,
 				48C63F0C29D96C23001C666F /* Peripheral.swift in Sources */,
 				48C63F0429D966D4001C666F /* Characteristic.swift in Sources */,
 				48C63F0829D96A5D001C666F /* Notification.swift in Sources */,
