@@ -4,6 +4,7 @@ public class BluetoothAssistant {
     private var centralManager: CBCentralManager
     private var centralManagerDelegate: CentralManagerDelegate
     private(set) var semaphore: DispatchSemaphore
+    var connectResult: Result<Peripheral, Swift.Error>?
     public init(
         queue: DispatchQueue? = nil,
         options: [String: Any]? = nil
@@ -42,9 +43,21 @@ public class BluetoothAssistant {
     }
     @discardableResult
     public func connect(
-        _ peripheral: Peripheral
+        _ peripheral: Peripheral,
+        timeout: Double,
+        options: [String : Any]? = nil
     ) -> Result<Peripheral, Swift.Error> {
-        return .failure(TealtoothError.unimplemented)
+        if centralManager.state != .poweredOn {
+            return .failure(TealtoothError.bluetoothNotPoweredOn)
+        }
+        centralManager.connect(peripheral.proxy, options: options)
+        let semaphoreResult = semaphore.wait(timeout: .now() + timeout)
+        if semaphoreResult == .timedOut {
+            return .failure(TealtoothError.timedOutWhileTryingToConnect)
+        }
+        let result = connectResult ?? .failure(TealtoothError.connectResultIsNil)
+        connectResult = nil
+        return result
     }
     @discardableResult
     public func disconnect(
