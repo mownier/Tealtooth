@@ -5,6 +5,7 @@ public class BluetoothAssistant {
     private var centralManagerDelegate: CentralManagerDelegate
     private(set) var semaphore: DispatchSemaphore
     private(set) var didInitiateDisconnect: Bool = false
+    private(set) var didInitiateConnect: Bool = false
     var connectResult: Result<Peripheral, Swift.Error>?
     var disconnectResult: Result<Peripheral, Swift.Error>?
     public init(
@@ -57,6 +58,8 @@ public class BluetoothAssistant {
         timeout: Double,
         options: [String : Any]? = nil
     ) -> Result<Peripheral, Swift.Error> {
+        didInitiateConnect = true
+        defer { didInitiateConnect = false }
         if centralManager.state != .poweredOn {
             let error = TealtoothError.bluetoothNotPoweredOn
             logger?.writeConsole(LogLevel.error, "on connect, an error occurred \(error)")
