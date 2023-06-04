@@ -2,6 +2,7 @@ import Foundation
 
 public enum TealtoothNotification: String {
     case onCentralStateUpdated
+    case onDiscoveredPeripheral
     public var name: Notification.Name {
         return Notification.Name(rawValue: "TealtoothNotification.\(self.rawValue)")
     }
