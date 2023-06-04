@@ -3,6 +3,8 @@ import CoreBluetooth
 public class BluetoothAssistant {
     private var centralManager: CBCentralManager
     private var centralManagerDelegate: CentralManagerDelegate
+    private var scanTimer: Timer?
+    private var scanTimeoutCallback: ((BluetoothAssistant) -> Void)?
     private(set) var semaphore: DispatchSemaphore
     private(set) var didInitiateDisconnect: Bool = false
     private(set) var didInitiateConnect: Bool = false
@@ -38,7 +40,34 @@ public class BluetoothAssistant {
         return nil
     }
     @discardableResult
+    public func scan(
+        services: [CBUUID]? = nil,
+        timeout: Double,
+        timeoutCallback: @escaping (BluetoothAssistant) -> Void
+    ) -> Swift.Error? {
+        if let error = scan(services: services) {
+            return error
+        }
+        DispatchQueue.main.async { [weak self] in
+            self?.scanTimeoutCallback = timeoutCallback
+        }
+        startScanTimer(interval: timeout)
+        return nil
+    }
+    @discardableResult
     public func stopScan() -> Swift.Error? {
+        defer {
+            stopScanTimer()
+            DispatchQueue.main.async { [weak self] in
+                guard let this = self else {
+                    return
+                }
+                if let callback = this.scanTimeoutCallback {
+                    callback(this)
+                }
+                this.scanTimeoutCallback = nil
+            }
+        }
         if centralManager.state != .poweredOn {
             let error = TealtoothError.bluetoothNotPoweredOn
             logger?.writeConsole(LogLevel.error, "on stop scan, an error occurred \(error)")
@@ -120,5 +149,32 @@ public class BluetoothAssistant {
         disconnectResult = nil
         logger?.writeConsole(LogLevel.error, "on disconnect, result = \(result)")
         return result
+    }
+    private func startScanTimer(interval: TimeInterval) {
+        DispatchQueue.main.async { [weak self] in
+            guard let this = self else {
+                return
+            }
+            if let timer = this.scanTimer, timer.isValid {
+                timer.invalidate()
+            }
+            this.scanTimer = nil
+            let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
+                self?.stopScan()
+            }
+            this.scanTimer = timer
+            RunLoop.main.add(timer, forMode: .default)
+        }
+    }
+    private func stopScanTimer() {
+        DispatchQueue.main.async { [weak self] in
+            guard let this = self else {
+                return
+            }
+            if let timer = this.scanTimer, timer.isValid {
+                timer.invalidate()
+            }
+            this.scanTimer = nil
+        }
     }
 }
