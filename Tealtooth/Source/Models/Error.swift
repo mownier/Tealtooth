@@ -4,6 +4,7 @@ public enum TealtoothError: Swift.Error {
     case unimplemented
     case bluetoothNotPoweredOn
     case alreadyScanning
+    case scanningNotActive
 }
 
 public struct TealtoothErrors: Swift.Error {
