@@ -1,6 +1,7 @@
 import CoreBluetooth
 
 class CentralManagerDelegate: NSObject, CBCentralManagerDelegate {
+    weak var bluetoothAssistant: BluetoothAssistant?
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         postNotification(
             name: TealtoothNotification.onCentralStateUpdated.name,
