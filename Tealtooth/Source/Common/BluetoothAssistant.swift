@@ -25,7 +25,7 @@ public class BluetoothAssistant {
         self.centralManagerDelegate.bluetoothAssistant = self
     }
     @discardableResult
-    public func scan(services: [CBUUID]? = nil) -> Swift.Error? {
+    public func scan(services: [String]? = nil) -> Swift.Error? {
         if centralManager.state != .poweredOn {
             let error = TealtoothError.bluetoothNotPoweredOn
             logger?.writeConsole(LogLevel.error, "on scan, an error occurred \(error)")
@@ -36,12 +36,12 @@ public class BluetoothAssistant {
             logger?.writeConsole(LogLevel.error, "on scan, an error occurred \(error)")
             return error
         }
-        centralManager.scanForPeripherals(withServices: services)
+        centralManager.scanForPeripherals(withServices: services?.compactMap({ CBUUID(string: $0) }))
         return nil
     }
     @discardableResult
     public func scan(
-        services: [CBUUID]? = nil,
+        services: [String]? = nil,
         timeout: Double,
         timeoutCallback: @escaping (BluetoothAssistant) -> Void
     ) -> Swift.Error? {
