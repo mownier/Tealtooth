@@ -48,7 +48,9 @@ public class BluetoothAssistant {
         options: [String : Any]? = nil
     ) -> Result<Peripheral, Swift.Error> {
         if centralManager.state != .poweredOn {
-            return .failure(TealtoothError.bluetoothNotPoweredOn)
+            let error = TealtoothError.bluetoothNotPoweredOn
+            logger?.writeConsole(LogLevel.error, "on connect, an error occurred \(error)")
+            return .failure(error)
         }
         if peripheral.proxy.state == .connected {
             logger?.writeConsole(LogLevel.info, "on connect, it seems that the peripheral is already connected")
