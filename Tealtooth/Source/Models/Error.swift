@@ -12,6 +12,8 @@ public enum TealtoothError: Swift.Error {
     case stillDisconnecting
     case timedOutWhileTryingToDisconnect
     case disconnectResultIsNil
+    case failedToConvertFromStringToUUID
+    case peripheralNotFound
 }
 
 public struct TealtoothErrors: Swift.Error {
