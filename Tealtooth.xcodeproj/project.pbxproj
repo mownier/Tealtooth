@@ -10,6 +10,7 @@
 		488DD1E72A2C3FE10057C645 /* Advertiser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 488DD1E62A2C3FE10057C645 /* Advertiser.swift */; };
 		488DD1EA2A2C55630057C645 /* OptionalExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 488DD1E92A2C55630057C645 /* OptionalExt.swift */; };
 		488DD1EC2A2C58B10057C645 /* UnexpectedDisconnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 488DD1EB2A2C58B10057C645 /* UnexpectedDisconnection.swift */; };
+		488DD1EE2A2C65D10057C645 /* ResultExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 488DD1ED2A2C65D10057C645 /* ResultExt.swift */; };
 		48C63EED29D95E08001C666F /* Tealtooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C63EE429D95E08001C666F /* Tealtooth.framework */; };
 		48C63EF229D95E08001C666F /* TealtoothTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C63EF129D95E08001C666F /* TealtoothTests.swift */; };
 		48C63EF329D95E08001C666F /* Tealtooth.h in Headers */ = {isa = PBXBuildFile; fileRef = 48C63EE729D95E08001C666F /* Tealtooth.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -37,6 +38,7 @@
 		488DD1E62A2C3FE10057C645 /* Advertiser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Advertiser.swift; sourceTree = "<group>"; };
 		488DD1E92A2C55630057C645 /* OptionalExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalExt.swift; sourceTree = "<group>"; };
 		488DD1EB2A2C58B10057C645 /* UnexpectedDisconnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnexpectedDisconnection.swift; sourceTree = "<group>"; };
+		488DD1ED2A2C65D10057C645 /* ResultExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultExt.swift; sourceTree = "<group>"; };
 		48C63EE429D95E08001C666F /* Tealtooth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Tealtooth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		48C63EE729D95E08001C666F /* Tealtooth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tealtooth.h; sourceTree = "<group>"; };
 		48C63EEC29D95E08001C666F /* TealtoothTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TealtoothTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -74,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				488DD1E92A2C55630057C645 /* OptionalExt.swift */,
+				488DD1ED2A2C65D10057C645 /* ResultExt.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 				488DD1E72A2C3FE10057C645 /* Advertiser.swift in Sources */,
 				488DD1EA2A2C55630057C645 /* OptionalExt.swift in Sources */,
 				48C63F0C29D96C23001C666F /* Peripheral.swift in Sources */,
+				488DD1EE2A2C65D10057C645 /* ResultExt.swift in Sources */,
 				48C63F0429D966D4001C666F /* Characteristic.swift in Sources */,
 				48C63F0829D96A5D001C666F /* Notification.swift in Sources */,
 				48C63F0029D96450001C666F /* Logger.swift in Sources */,
