@@ -8,6 +8,7 @@ public enum TealtoothError: Swift.Error {
     case timedOutWhileTryingToConnect
     case errorNotDetermined
     case connectResultIsNil
+    case stillConnecting
 }
 
 public struct TealtoothErrors: Swift.Error {
