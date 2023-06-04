@@ -37,10 +37,14 @@ public class BluetoothAssistant {
     @discardableResult
     public func stopScan() -> Swift.Error? {
         if centralManager.state != .poweredOn {
-            return TealtoothError.bluetoothNotPoweredOn
+            let error = TealtoothError.bluetoothNotPoweredOn
+            logger?.writeConsole(LogLevel.error, "on stop scan, an error occurred \(error)")
+            return error
         }
         if !centralManager.isScanning {
-            return TealtoothError.scanningNotActive
+            let error = TealtoothError.scanningNotActive
+            logger?.writeConsole(LogLevel.error, "on stop scan, an error occurred \(error)")
+            return error
         }
         centralManager.stopScan()
         return nil
