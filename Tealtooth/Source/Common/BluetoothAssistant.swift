@@ -72,7 +72,9 @@ public class BluetoothAssistant {
         centralManager.connect(peripheral.proxy, options: options)
         let semaphoreResult = semaphore.wait(timeout: .now() + timeout)
         if semaphoreResult == .timedOut {
-            return .failure(TealtoothError.timedOutWhileTryingToConnect)
+            let error = TealtoothError.timedOutWhileTryingToConnect
+            logger?.writeConsole(LogLevel.error, "on connect, an error occurred \(error)")
+            return .failure(error)
         }
         let result = connectResult ?? .failure(TealtoothError.connectResultIsNil)
         connectResult = nil
