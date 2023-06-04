@@ -50,6 +50,15 @@ public class BluetoothAssistant {
         if centralManager.state != .poweredOn {
             return .failure(TealtoothError.bluetoothNotPoweredOn)
         }
+        if peripheral.proxy.state == .connected {
+            logger?.writeConsole(LogLevel.info, "on connect, it seems that the peripheral is already connected")
+            return .success(peripheral)
+        }
+        if peripheral.proxy.state == .connecting {
+            let error = TealtoothError.stillConnecting
+            logger?.writeConsole(LogLevel.error, "on connect, an error occurred \(error)")
+            return .failure(error)
+        }
         centralManager.connect(peripheral.proxy, options: options)
         let semaphoreResult = semaphore.wait(timeout: .now() + timeout)
         if semaphoreResult == .timedOut {
