@@ -38,6 +38,9 @@ public class BluetoothAssistant {
             logger?.writeConsole(LogLevel.error, "on scan, an error occurred \(error)")
             return error
         }
+        logger?.writeConsole(LogLevel.info, "on scan for peripherals, " +
+                             "services = \(String(describing: services)), " +
+                             "timeout = \(String(describing: timeout))")
         centralManager.scanForPeripherals(withServices: services?.compactMap({ CBUUID(string: $0) }))
         if let interval = timeout {
             startScanTimer(interval: interval)
@@ -61,6 +64,7 @@ public class BluetoothAssistant {
             logger?.writeConsole(LogLevel.error, "on stop scan, an error occurred \(error)")
             return error
         }
+        logger?.writeConsole(LogLevel.info, "on stop scan")
         centralManager.stopScan()
         return nil
     }
@@ -187,14 +191,17 @@ public class BluetoothAssistant {
     }
     private func stopScanTimer() {
         DispatchQueue.main.async { [weak self] in
-            if let timer = self?.scanTimer, timer.isValid {
-                timer.invalidate()
-                self?.scanTimer = nil
-                postNotification(
-                    name: TealtoothNotification.onScanTimedOut.name,
-                    object: self
-                )
+            guard let timer = self?.scanTimer else {
+                return
             }
+            if timer.isValid {
+                timer.invalidate()
+            }
+            postNotification(
+                name: TealtoothNotification.onScanTimedOut.name,
+                object: self
+            )
+            self?.scanTimer = nil
         }
     }
 }
