@@ -5,7 +5,6 @@ public class BluetoothAssistant {
     private var centralManager: CBCentralManager
     private var centralManagerDelegate: CentralManagerDelegate
     private var scanTimer: Timer?
-    private var scanTimeoutCallback: ((BluetoothAssistant) -> Void)?
     private(set) var semaphore: DispatchSemaphore
     private(set) var didInitiateDisconnect: Bool = false
     private(set) var didInitiateConnect: Bool = false
@@ -28,7 +27,7 @@ public class BluetoothAssistant {
         self.centralManagerDelegate.bluetoothAssistant = self
     }
     @discardableResult
-    public func scan(services: [String]? = nil) -> Swift.Error? {
+    public func scan(services: [String]? = nil, timeout: Double? = nil) -> Swift.Error? {
         if centralManager.state != .poweredOn {
             let error = TealtoothError.bluetoothNotPoweredOn
             logger?.writeConsole(LogLevel.error, "on scan, an error occurred \(error)")
@@ -40,33 +39,16 @@ public class BluetoothAssistant {
             return error
         }
         centralManager.scanForPeripherals(withServices: services?.compactMap({ CBUUID(string: $0) }))
-        return nil
-    }
-    @discardableResult
-    public func scan(
-        services: [String]? = nil,
-        timeout: Double,
-        timeoutCallback: @escaping (BluetoothAssistant) -> Void
-    ) -> Swift.Error? {
-        if let error = scan(services: services) {
-            return error
+        if let interval = timeout {
+            startScanTimer(interval: interval)
         }
-        scanTimeoutCallback = timeoutCallback
-        startScanTimer(interval: timeout)
         return nil
     }
     @discardableResult
     public func stopScan() -> Swift.Error? {
         defer {
-            stopScanTimer()
-            DispatchQueue.main.async { [weak self] in
-                guard let this = self else {
-                    return
-                }
-                if let callback = this.scanTimeoutCallback {
-                    callback(this)
-                }
-                this.scanTimeoutCallback = nil
+            if scanTimer != nil {
+                stopScanTimer()
             }
         }
         if centralManager.state != .poweredOn {
@@ -205,13 +187,14 @@ public class BluetoothAssistant {
     }
     private func stopScanTimer() {
         DispatchQueue.main.async { [weak self] in
-            guard let this = self else {
-                return
-            }
-            if let timer = this.scanTimer, timer.isValid {
+            if let timer = self?.scanTimer, timer.isValid {
                 timer.invalidate()
+                self?.scanTimer = nil
+                postNotification(
+                    name: TealtoothNotification.onScanTimedOut.name,
+                    object: self
+                )
             }
-            this.scanTimer = nil
         }
     }
 }

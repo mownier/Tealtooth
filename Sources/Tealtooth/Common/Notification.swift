@@ -4,6 +4,7 @@ public enum TealtoothNotification: String {
     case onCentralStateUpdated
     case onDiscoveredPeripheral
     case onDisconnectedUnexpectedly
+    case onScanTimedOut
     public var name: Notification.Name {
         return Notification.Name(rawValue: "TealtoothNotification.\(self.rawValue)")
     }
