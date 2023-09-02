@@ -4,10 +4,11 @@ public class BluetoothAssistant {
     public private(set) var name: String
     private var centralManager: CBCentralManager
     private var centralManagerDelegate: CentralManagerDelegate
-    private var scanTimer: Timer?
     private(set) var semaphore: DispatchSemaphore
+    private(set) var scanSemaphore: DispatchSemaphore
     private(set) var didInitiateDisconnect: Bool = false
     private(set) var didInitiateConnect: Bool = false
+    private(set) var didInitiateStopScanWithTimeout: Bool = false
     var connectResult: Result<Peripheral, Swift.Error>?
     var disconnectResult: Result<Peripheral, Swift.Error>?
     public init(
@@ -24,10 +25,11 @@ public class BluetoothAssistant {
         )
         self.centralManagerDelegate = centralManagerDelegate
         self.semaphore = DispatchSemaphore(value: 1)
+        self.scanSemaphore = DispatchSemaphore(value: 1)
         self.centralManagerDelegate.bluetoothAssistant = self
     }
     @discardableResult
-    public func scan(services: [String]? = nil, timeout: Double? = nil) -> Swift.Error? {
+    public func scan(services: [String]? = nil) -> Swift.Error? {
         if centralManager.state != .poweredOn {
             let error = TealtoothError.bluetoothNotPoweredOn
             logger?.writeConsole(LogLevel.error, "on scan, an error occurred \(error)")
@@ -39,34 +41,30 @@ public class BluetoothAssistant {
             return error
         }
         logger?.writeConsole(LogLevel.info, "on scan for peripherals, " +
-                             "services = \(String(describing: services)), " +
-                             "timeout = \(String(describing: timeout))")
+                             "services = \(String(describing: services))")
         centralManager.scanForPeripherals(withServices: services?.compactMap({ CBUUID(string: $0) }))
-        if let interval = timeout {
-            startScanTimer(interval: interval)
-        }
         return nil
     }
     @discardableResult
+    public func stopScanAfter(_ timeout: Double) -> Swift.Error? {
+        didInitiateStopScanWithTimeout = true
+        _ = scanSemaphore.wait(timeout: .now() + 1.0)
+        _ = scanSemaphore.wait(timeout: .now() + timeout)
+        didInitiateStopScanWithTimeout = false
+        let result = handleStopScan()
+        postNotification(
+            name: TealtoothNotification.onScanTimedOut.name,
+            object: self
+        )
+        return result
+    }
+    @discardableResult
     public func stopScan() -> Swift.Error? {
-        defer {
-            if scanTimer != nil {
-                stopScanTimer()
-            }
+        if didInitiateStopScanWithTimeout {
+            scanSemaphore.signal()
+            return nil
         }
-        if centralManager.state != .poweredOn {
-            let error = TealtoothError.bluetoothNotPoweredOn
-            logger?.writeConsole(LogLevel.error, "on stop scan, an error occurred \(error)")
-            return error
-        }
-        if !centralManager.isScanning {
-            let error = TealtoothError.scanningNotActive
-            logger?.writeConsole(LogLevel.error, "on stop scan, an error occurred \(error)")
-            return error
-        }
-        logger?.writeConsole(LogLevel.info, "on stop scan")
-        centralManager.stopScan()
-        return nil
+        return handleStopScan()
     }
     @discardableResult
     public func retrievePeripherals(identifiers: [String]) -> Result<[Peripheral], Swift.Error> {
@@ -173,35 +171,19 @@ public class BluetoothAssistant {
         logger?.writeConsole(LogLevel.error, "on disconnect, result = \(result)")
         return result
     }
-    private func startScanTimer(interval: TimeInterval) {
-        DispatchQueue.main.async { [weak self] in
-            guard let this = self else {
-                return
-            }
-            if let timer = this.scanTimer, timer.isValid {
-                timer.invalidate()
-            }
-            this.scanTimer = nil
-            let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
-                self?.stopScan()
-            }
-            this.scanTimer = timer
-            RunLoop.main.add(timer, forMode: .default)
+    private func handleStopScan() -> Swift.Error? {
+        if centralManager.state != .poweredOn {
+            let error = TealtoothError.bluetoothNotPoweredOn
+            logger?.writeConsole(LogLevel.error, "on stop scan, an error occurred \(error)")
+            return error
         }
-    }
-    private func stopScanTimer() {
-        DispatchQueue.main.async { [weak self] in
-            guard let timer = self?.scanTimer else {
-                return
-            }
-            if timer.isValid {
-                timer.invalidate()
-            }
-            postNotification(
-                name: TealtoothNotification.onScanTimedOut.name,
-                object: self
-            )
-            self?.scanTimer = nil
+        if !centralManager.isScanning {
+            let error = TealtoothError.scanningNotActive
+            logger?.writeConsole(LogLevel.error, "on stop scan, an error occurred \(error)")
+            return error
         }
+        logger?.writeConsole(LogLevel.info, "on stop scan")
+        centralManager.stopScan()
+        return nil
     }
 }
