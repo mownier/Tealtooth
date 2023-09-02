@@ -1,14 +1,19 @@
 import CoreBluetooth
 
 class CentralManagerDelegate: NSObject, CBCentralManagerDelegate {
-    weak var bluetoothAssistant: BluetoothAssistant?
+    weak var assistant: BluetoothAssistant?
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         postNotification(
             name: TealtoothNotification.onCentralStateUpdated.name,
             object: central.state
         )
     }
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+    func centralManager(
+        _ central: CBCentralManager,
+        didDiscover peripheral: CBPeripheral,
+        advertisementData: [String : Any],
+        rssi RSSI: NSNumber
+    ) {
         postNotification(
             name: TealtoothNotification.onDiscoveredPeripheral.name,
             object: Advertiser(
@@ -18,22 +23,33 @@ class CentralManagerDelegate: NSObject, CBCentralManagerDelegate {
             )
         )
     }
-    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        if bluetoothAssistant?.didInitiateConnect == false {
+    func centralManager(
+        _ central: CBCentralManager,
+        didConnect peripheral: CBPeripheral
+    ) {
+        if assistant?.didInitiateConnect == false {
             return
         }
-        bluetoothAssistant?.connectResult = .success(Peripheral(proxy: peripheral))
-        bluetoothAssistant?.semaphore.signal()
+        assistant?.connectResult = .success(Peripheral(proxy: peripheral))
+        assistant?.semaphore(peripheral.keyName).mutex.signal()
     }
-    func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        if bluetoothAssistant?.didInitiateConnect == false {
+    func centralManager(
+        _ central: CBCentralManager,
+        didFailToConnect peripheral: CBPeripheral,
+        error: Error?
+    ) {
+        if assistant?.didInitiateConnect == false {
             return
         }
-        bluetoothAssistant?.connectResult = .failure(error ?? TealtoothError.errorNotDetermined)
-        bluetoothAssistant?.semaphore.signal()
+        assistant?.connectResult = .failure(error ?? TealtoothError.errorNotDetermined)
+        assistant?.semaphore(peripheral.keyName).mutex.signal()
     }
-    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        if bluetoothAssistant?.didInitiateDisconnect == false {
+    func centralManager(
+        _ central: CBCentralManager,
+        didDisconnectPeripheral peripheral: CBPeripheral,
+        error: Error?
+    ) {
+        if assistant?.didInitiateDisconnect == false {
             postNotification(
                 name: TealtoothNotification.onDisconnectedUnexpectedly.name,
                 object: UnexpectedDisconnection(
@@ -44,10 +60,11 @@ class CentralManagerDelegate: NSObject, CBCentralManagerDelegate {
             return
         }
         if let err = error {
-            bluetoothAssistant?.disconnectResult = .failure(err)
-            bluetoothAssistant?.semaphore.signal()
+            assistant?.disconnectResult = .failure(err)
+            assistant?.semaphore(peripheral.keyName).mutex.signal()
+            return
         }
-        bluetoothAssistant?.disconnectResult = .success(Peripheral(proxy: peripheral))
-        bluetoothAssistant?.semaphore.signal()
+        assistant?.disconnectResult = .success(Peripheral(proxy: peripheral))
+        assistant?.semaphore(peripheral.keyName).mutex.signal()
     }
 }
