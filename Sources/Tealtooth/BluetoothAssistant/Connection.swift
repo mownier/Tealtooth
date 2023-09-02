@@ -3,6 +3,19 @@ import CoreBluetooth
 extension BluetoothAssistant {
     @discardableResult
     public func connect(
+        _ identifier: String,
+        timeout: Double,
+        options: [String : Any]? = nil
+    ) -> Result<Peripheral, Swift.Error> {
+        let result = retrievePeripheral(identifier: identifier)
+        if let err = result.error {
+            return .failure(err)
+        }
+        let peripheral = result.info!
+        return connect(peripheral, timeout: timeout, options: options)
+    }
+    @discardableResult
+    public func connect(
         _ peripheral: Peripheral,
         timeout: Double,
         options: [String : Any]? = nil
