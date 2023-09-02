@@ -5,6 +5,7 @@ public class BluetoothAssistant {
     let centralManager: CBCentralManager
     let centralManagerDelegate: CentralManagerDelegate
     var semaphores: [Semaphore]
+    var processors: [Processor]
     var didInitiateDisconnect: Bool = false
     var didInitiateConnect: Bool = false
     var didInitiateStopScanWithTimeout: Bool = false
@@ -16,6 +17,7 @@ public class BluetoothAssistant {
         options: [String: Any]? = nil
     ) {
         self.semaphores = []
+        self.processors = []
         self.name = name
         let centralManagerDelegate = CentralManagerDelegate()
         self.centralManager = CBCentralManager(
