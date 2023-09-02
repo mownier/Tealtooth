@@ -17,21 +17,21 @@ extension BluetoothAssistant {
     }
     @discardableResult
     public func addPeripheralProcess(
-        identifier: String,
+        name: String,
         operation: Operation
     ) -> BluetoothAssistant {
         return addProcess(
-            keyName: identifier,
+            keyName: name,
             operation: operation
         )
     }
     @discardableResult
     public func addPeripheralProcess(
-        identifier: String,
+        name: String,
         block: @escaping () -> Void
     ) -> BluetoothAssistant {
         return addProcess(
-            keyName: identifier,
+            keyName: name,
             block: block
         )
     }
