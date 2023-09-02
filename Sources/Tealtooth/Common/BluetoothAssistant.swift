@@ -51,9 +51,7 @@ public class BluetoothAssistant {
         if let error = scan(services: services) {
             return error
         }
-        DispatchQueue.main.async { [weak self] in
-            self?.scanTimeoutCallback = timeoutCallback
-        }
+        scanTimeoutCallback = timeoutCallback
         startScanTimer(interval: timeout)
         return nil
     }
