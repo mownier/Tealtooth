@@ -2,7 +2,10 @@ import CoreBluetooth
 
 extension BluetoothAssistant {
     @discardableResult
-    public func scan(services: [String]? = nil) -> Swift.Error? {
+    public func scan(
+        services: [String]? = nil,
+        options: [String: Any]?  = nil
+    ) -> Swift.Error? {
         if centralManager.state != .poweredOn {
             let error = TealtoothError.bluetoothNotPoweredOn
             logger?.writeConsole(LogLevel.error, "on scan, an error occurred \(error)")
@@ -15,7 +18,10 @@ extension BluetoothAssistant {
         }
         logger?.writeConsole(LogLevel.info, "on scan for peripherals, " +
                              "services = \(String(describing: services))")
-        centralManager.scanForPeripherals(withServices: services?.compactMap({ CBUUID(string: $0) }))
+        centralManager.scanForPeripherals(
+            withServices: services?.compactMap({ CBUUID(string: $0) }),
+            options: options
+        )
         return nil
     }
     @discardableResult
