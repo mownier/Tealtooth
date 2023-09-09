@@ -17,30 +17,55 @@ extension BluetoothAssistant {
     }
     @discardableResult
     public func addPeripheralProcess(
-        name: String,
+        identifier: String,
         operation: Operation
     ) -> BluetoothAssistant {
         return addProcess(
-            keyName: name,
+            keyName: identifier,
             operation: operation
         )
     }
     @discardableResult
     public func addPeripheralProcess(
-        name: String,
+        identifier: String,
         block: @escaping () -> Void
     ) -> BluetoothAssistant {
         return addProcess(
-            keyName: name,
+            keyName: identifier,
             block: block
         )
+    }
+    @discardableResult
+    public func removeProcessors(_ filter: (String) -> Bool) -> BluetoothAssistant {
+        processors.filter({ filter($0.name) }).forEach({ processor in
+            processor.workQueue.cancelAllOperations()
+            processor.resultQueue.cancelAllOperations()
+        })
+        processors.removeAll(where: { filter($0.name) })
+        return self
+    }
+    func processor(_ name: String) -> Processor {
+        if let result = processors.first(where: { $0.name == name }) {
+            return result
+        }
+        let workQueue = OperationQueue()
+        let resultQueue = OperationQueue()
+        workQueue.maxConcurrentOperationCount = 1
+        resultQueue.maxConcurrentOperationCount = 1
+        let processor = Processor(
+            name: name,
+            workQueue: workQueue,
+            resultQueue: resultQueue
+        )
+        processors.append(processor)
+        return processor
     }
     @discardableResult
     private func addProcess(
         keyName: String,
         operation: Operation
     ) -> BluetoothAssistant {
-        processor(keyName).queue.addOperation(operation)
+        processor(keyName).workQueue.addOperation(operation)
         return self
     }
     @discardableResult
@@ -48,28 +73,21 @@ extension BluetoothAssistant {
         keyName: String,
         block: @escaping () -> Void
     ) -> BluetoothAssistant {
-        processor(keyName).queue.addOperation(block)
+        processor(keyName).workQueue.addOperation(block)
         return self
-    }
-    private func processor(_ name: String) -> Processor {
-        if let result = processors.first(where: { $0.name == name }) {
-            return result
-        }
-        let queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 1
-        let processor = Processor(
-            name: name,
-            queue: queue
-        )
-        processors.append(processor)
-        return processor
     }
     class Processor {
         let name: String
-        let queue: OperationQueue
-        init(name: String, queue: OperationQueue) {
+        let workQueue: OperationQueue
+        let resultQueue: OperationQueue
+        init(
+            name: String,
+            workQueue: OperationQueue,
+            resultQueue: OperationQueue
+        ) {
             self.name = name
-            self.queue = queue
+            self.workQueue = workQueue
+            self.resultQueue = resultQueue
         }
     }
 }

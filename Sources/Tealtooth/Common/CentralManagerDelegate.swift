@@ -27,44 +27,51 @@ class CentralManagerDelegate: NSObject, CBCentralManagerDelegate {
         _ central: CBCentralManager,
         didConnect peripheral: CBPeripheral
     ) {
-        if assistant?.didInitiateConnect == false {
-            return
+        assistant?.processor(peripheral.keyName).resultQueue.addOperation { [weak self] in
+            if self?.assistant?.didInitiateConnect == false {
+                return
+            }
+            self?.assistant?.connectResult = .success(Peripheral(proxy: peripheral))
+            self?.assistant?.semaphore(peripheral.keyName).mutex.signal()
         }
-        assistant?.connectResult = .success(Peripheral(proxy: peripheral))
-        assistant?.semaphore(peripheral.keyName).mutex.signal()
     }
     func centralManager(
         _ central: CBCentralManager,
         didFailToConnect peripheral: CBPeripheral,
         error: Error?
     ) {
-        if assistant?.didInitiateConnect == false {
-            return
+        assistant?.processor(peripheral.keyName).resultQueue.addOperation { [weak self] in
+            if self?.assistant?.didInitiateConnect == false {
+                return
+            }
+            self?.assistant?.connectResult = .failure(error ?? TealtoothError.errorNotDetermined)
+            self?.assistant?.semaphore(peripheral.keyName).mutex.signal()
         }
-        assistant?.connectResult = .failure(error ?? TealtoothError.errorNotDetermined)
-        assistant?.semaphore(peripheral.keyName).mutex.signal()
     }
     func centralManager(
         _ central: CBCentralManager,
         didDisconnectPeripheral peripheral: CBPeripheral,
         error: Error?
     ) {
-        if assistant?.didInitiateDisconnect == false {
-            postNotification(
-                name: TealtoothNotification.onDisconnectedUnexpectedly.name,
-                object: UnexpectedDisconnection(
-                    peripheral: Peripheral(proxy: peripheral),
-                    error: error
+        assistant?.processor(peripheral.keyName).resultQueue.addOperation { [weak self] in
+            if self?.assistant?.didInitiateDisconnect == false {
+                postNotification(
+                    name: TealtoothNotification.onDisconnectedUnexpectedly.name,
+                    object: UnexpectedDisconnection(
+                        peripheral: Peripheral(proxy: peripheral),
+                        error: error
+                    )
                 )
-            )
-            return
+                return
+            }
+            defer {
+                self?.assistant?.semaphore(peripheral.keyName).mutex.signal()
+            }
+            if let err = error {
+                self?.assistant?.disconnectResult = .failure(err)
+                return
+            }
+            self?.assistant?.disconnectResult = .success(Peripheral(proxy: peripheral))
         }
-        if let err = error {
-            assistant?.disconnectResult = .failure(err)
-            assistant?.semaphore(peripheral.keyName).mutex.signal()
-            return
-        }
-        assistant?.disconnectResult = .success(Peripheral(proxy: peripheral))
-        assistant?.semaphore(peripheral.keyName).mutex.signal()
     }
 }

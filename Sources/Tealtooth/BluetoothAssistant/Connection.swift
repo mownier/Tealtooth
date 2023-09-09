@@ -9,6 +9,7 @@ extension BluetoothAssistant {
     ) -> Result<Peripheral, Swift.Error> {
         let result = retrievePeripheral(identifier: identifier)
         if let err = result.error {
+            logger?.writeConsole(LogLevel.error, "on connect, an error occurred \(err)")
             return .failure(err)
         }
         let peripheral = result.info!
@@ -46,8 +47,24 @@ extension BluetoothAssistant {
         }
         let result = connectResult ?? .failure(TealtoothError.connectResultIsNil)
         connectResult = nil
-        logger?.writeConsole(LogLevel.error, "on connect, result = \(result)")
+        logger?.writeConsole(
+            result.error == nil ? LogLevel.info : LogLevel.error,
+            "on connect, result = \(result)"
+        )
         return result
+    }
+    @discardableResult
+    public func disconnect(
+        _ identifier: String,
+        timeout: Double
+    ) -> Result<Peripheral, Swift.Error> {
+        let result = retrievePeripheral(identifier: identifier)
+        if let err = result.error {
+            logger?.writeConsole(LogLevel.error, "on disconnect, an error occurred \(err)")
+            return .failure(err)
+        }
+        let peripheral = result.info!
+        return disconnect(peripheral, timeout: timeout)
     }
     @discardableResult
     public func disconnect(
@@ -80,7 +97,10 @@ extension BluetoothAssistant {
         }
         let result = disconnectResult ?? .failure(TealtoothError.disconnectResultIsNil)
         disconnectResult = nil
-        logger?.writeConsole(LogLevel.error, "on disconnect, result = \(result)")
+        logger?.writeConsole(
+            result.error == nil ? LogLevel.info : LogLevel.error,
+            "on disconnect, result = \(result)"
+        )
         return result
     }
 }
