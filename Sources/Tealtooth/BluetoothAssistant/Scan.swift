@@ -21,7 +21,6 @@ extension BluetoothAssistant {
     @discardableResult
     public func stopScanAfter(_ timeout: Double) -> Swift.Error? {
         didInitiateStopScanWithTimeout = true
-        _ = scanSemaphore().mutex.wait(timeout: .now() + 1.0)
         _ = scanSemaphore().mutex.wait(timeout: .now() + timeout)
         didInitiateStopScanWithTimeout = false
         let result = handleStopScan()
