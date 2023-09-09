@@ -7,7 +7,7 @@ extension BluetoothAssistant {
         }
         let semaphore = Semaphore(
             name: name,
-            mutex: DispatchSemaphore(value: 1)
+            mutex: DispatchSemaphore(value: 0)
         )
         semaphores.append(semaphore)
         return semaphore
