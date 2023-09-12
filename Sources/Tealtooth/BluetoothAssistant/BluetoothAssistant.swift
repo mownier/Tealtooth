@@ -16,6 +16,7 @@ public class BluetoothAssistant {
     var didInitiateDiscoverCharacteristics: Bool = false
     var didInitiateReadCharacteristic: Bool = false
     var didInitiateWriteCharacteristic: Bool = false
+    var didInitiateSubscribeCharacteristic: Bool = false
     var didInitiateUpdateNotifyStatus: Bool = false
     var didInitiateDiscoverDescriptors: Bool = false
     var didInitiateReadDescriptor: Bool = false
@@ -28,6 +29,7 @@ public class BluetoothAssistant {
     var discoverCharacteristicsResult: Result<[Characteristic], Swift.Error>?
     var readCharacteristicResult: Result<Characteristic, Swift.Error>?
     var writeCharacteristicResult: Result<Characteristic, Swift.Error>?
+    var subscribeCharacteristicResult: Result<Characteristic, Swift.Error>?
     var updateNotifyStatusResult: Result<Characteristic, Swift.Error>?
     var discoverDescriptorsResult: Result<[Descriptor], Swift.Error>?
     var readDescriptorResult: Result<Descriptor, Swift.Error>?

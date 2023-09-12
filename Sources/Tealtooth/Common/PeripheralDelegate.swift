@@ -101,17 +101,22 @@ class PeripheralDelegate: NSObject, CBPeripheralDelegate {
         error: Error?
     ) {
         assistant?.processor(peripheral.keyName).resultQueue.addOperation { [weak self] in
-            if self?.assistant?.didInitiateReadCharacteristic == false {
-                return
-            }
-            defer {
+            if self?.assistant?.didInitiateSubscribeCharacteristic == true {
+                if let err = error {
+                    self?.assistant?.subscribeCharacteristicResult = .failure(err)
+                } else {
+                    self?.assistant?.subscribeCharacteristicResult = .success(Characteristic(proxy: characteristic))
+                }
                 self?.assistant?.semaphore(peripheral.keyName).mutex.signal()
             }
-            if let err = error {
-                self?.assistant?.readCharacteristicResult = .failure(err)
-                return
+            if self?.assistant?.didInitiateReadCharacteristic == true {
+                if let err = error {
+                    self?.assistant?.readCharacteristicResult = .failure(err)
+                } else {
+                    self?.assistant?.readCharacteristicResult = .success(Characteristic(proxy: characteristic))
+                }
+                self?.assistant?.semaphore(peripheral.keyName).mutex.signal()
             }
-            self?.assistant?.readCharacteristicResult = .success(Characteristic(proxy: characteristic))
         }
     }
     func peripheral(

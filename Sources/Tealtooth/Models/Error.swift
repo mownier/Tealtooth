@@ -39,6 +39,9 @@ public enum TealtoothError: Swift.Error {
     case readDescriptorResultIsNil
     case timedOutWhileTryingToWriteDescriptor
     case writeDescriptorResultIsNil
+    case characteristicNotNotifying
+    case timedOutWhileTryingToSubscribeCharacteristic
+    case subscribeCharacteristicResultIsNil
 }
 
 public struct TealtoothErrors: Swift.Error {

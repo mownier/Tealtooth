@@ -498,6 +498,69 @@ extension BluetoothAssistant {
         )
         return result
     }
+    @discardableResult
+    public func subscribeCharacteristic(
+        identifier: String,
+        data: Data,
+        uuid: String,
+        serviceUUID: String,
+        timeout: TimeInterval?
+    ) -> Result<Characteristic, Swift.Error> {
+        didInitiateSubscribeCharacteristic = true
+        defer { didInitiateSubscribeCharacteristic = false }
+        logger?.writeConsole(LogLevel.info, "on subscribe characteristic, " +
+                             "identifer = \(identifier), " +
+                             "data = \([UInt8](data)), " +
+                             "characteristic UUID = \(uuid), " +
+                             "service UUID = \(serviceUUID), " +
+                             "timeout = \(timeout == nil ? "nil" : "\(timeout!)")")
+        let retrievePeripheralResult = retrievePeripheral(identifier: identifier)
+        if let err = retrievePeripheralResult.error {
+            logger?.writeConsole(LogLevel.error, "on subscribe characteristic, an error occurred \(err)")
+            return .failure(err)
+        }
+        let peripheral = retrievePeripheralResult.info!
+        if peripheral.proxy.state != .connected {
+            let error = TealtoothError.peripheralNotConnected
+            logger?.writeConsole(LogLevel.error, "on subscribe characteristic, an error occurred \(error)")
+            return .failure(error)
+        }
+        guard let service = peripheral.proxy.services?.first(where: { $0.uuid.uuidString == serviceUUID }) else {
+            logger?.writeConsole(LogLevel.error, "on subscribe characteristic, service \(serviceUUID) not found")
+            return .failure(TealtoothError.serviceNotFound)
+        }
+        guard let characteristic = service.characteristics?.first(where: { $0.uuid.uuidString == uuid }) else {
+            logger?.writeConsole(LogLevel.error, "on subscribe characteristic, characteristic \(uuid) not found")
+            return .failure(TealtoothError.characteristicNotFound)
+        }
+        if !characteristic.isNotifying {
+            logger?.writeConsole(LogLevel.error, "on subscribe characteristic, characteristic \(uuid) is not notifying")
+            return .failure(TealtoothError.characteristicNotNotifying)
+        }
+        peripheral.proxy.writeValue(
+            data,
+            for: characteristic,
+            type: .withoutResponse
+        )
+        let mutex = semaphore(identifier).mutex
+        let semaResult: DispatchTimeoutResult
+        if let interval = timeout {
+            semaResult = mutex.wait(timeout: .now() + interval)
+        } else {
+            semaResult = .success
+            mutex.wait()
+        }
+        if semaResult == .timedOut {
+            return .failure(TealtoothError.timedOutWhileTryingToSubscribeCharacteristic)
+        }
+        let result = subscribeCharacteristicResult ?? .failure(TealtoothError.subscribeCharacteristicResultIsNil)
+        subscribeCharacteristicResult = nil
+        logger?.writeConsole(
+            result.error == nil ? LogLevel.info : LogLevel.error,
+            "on subscribe characteristic, result = \(result)"
+        )
+        return result
+    }
 }
 
 // MARK: Descriptors
